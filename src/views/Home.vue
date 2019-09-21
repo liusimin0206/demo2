@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="box">
     <div id="container" style="width:1150px; height:650px"></div>
@@ -8,16 +6,22 @@
         <el-checkbox
           v-model="showDrugstore"
           @change="toggleLayer(showDrugstore, 'drugStoreLayer')"
-        >药店</el-checkbox>
+          >药店</el-checkbox
+        >
       </div>
       <div class="input-item">
-        <el-checkbox v-model="showHotel" @change="toggleLayer(showHotel, 'hotelLayer')">酒店</el-checkbox>
+        <el-checkbox
+          v-model="showHotel"
+          @change="toggleLayer(showHotel, 'hotelLayer')"
+          >酒店</el-checkbox
+        >
       </div>
       <div class="input-item">
         <el-checkbox
           v-model="showDriverschool"
           @change="toggleLayer(showDriverschool, 'driverschoolLayer')"
-        >驾校</el-checkbox>
+          >驾校</el-checkbox
+        >
       </div>
     </div>
     <div id="myPageTop">
@@ -25,13 +29,26 @@
       <input id="tipinput" />
     </div>
     <div>
-      <el-table :data="tableData" border style=" width: 1150px;height: 100%; line-height: 18px;">
+      <el-table
+        :data="tableData"
+        border
+        style=" width: 1150px;height: 100%; line-height: 18px;"
+      >
         <el-table-column prop="id" label="纳税人识别号"></el-table-column>
         <el-table-column prop="name" label="纳税人姓名"></el-table-column>
-        <el-table-column prop="tel_phone" label="纳税人联系方式"></el-table-column>
+        <el-table-column
+          prop="tel_phone"
+          label="纳税人联系方式"
+        ></el-table-column>
         <el-table-column prop="is_jiaona" label="交纳状态"></el-table-column>
-        <el-table-column prop="shiji_money" label="实际缴纳金额"></el-table-column>
-        <el-table-column prop="yuji_money" label="预计缴纳金额"></el-table-column>
+        <el-table-column
+          prop="shiji_money"
+          label="实际缴纳金额"
+        ></el-table-column>
+        <el-table-column
+          prop="yuji_money"
+          label="预计缴纳金额"
+        ></el-table-column>
         <el-table-column prop="chazhi_money" label="缴纳差值"></el-table-column>
       </el-table>
     </div>
@@ -44,20 +61,66 @@ export default {
   data() {
     return {
       map: {},
+      infoWindow: {},
       drugstore: [
-        { name: "新乡市中心医院", center: "113.865366,35.296382" },
-        { name: "新乡医学院第三附属医院", center: "113.925962,35.280968" },
-        { name: "第二人民医院", center: "113.879099,35.315574" }
+        {
+          name: "新乡市中心医院",
+          center: "113.865366,35.296382",
+          lng: "113.865366",
+          lat: "35.296382"
+        },
+        {
+          name: "新乡医学院第三附属医院",
+          center: "113.925962,35.280968",
+          lng: "113.925962",
+          lat: "35.280968"
+        },
+        {
+          name: "第二人民医院",
+          center: "113.879099,35.315574",
+          lng: "113.879099",
+          lat: "35.315574"
+        }
       ],
       hotel: [
-        { name: "格林豪泰酒店", center: "113.883219,35.284612" },
-        { name: "新乡国际饭店", center: "113.891716,35.29428" },
-        { name: "新乡开元名都大酒店", center: "113.926477,35.307729" },
-        { name: "荷塘月色假日酒店", center: "113.93918,35.296522" }
+        {
+          name: "格林豪泰酒店",
+          center: "113.883219,35.284612",
+          lng: "113.883219",
+          lat: "35.284612"
+        },
+        {
+          name: "新乡国际饭店",
+          center: "113.891716,35.29428",
+          lng: "113.891716",
+          lat: "35.29428"
+        },
+        {
+          name: "新乡开元名都大酒店",
+          center: "113.926477,35.307729",
+          lng: "113.926477",
+          lat: "35.307729"
+        },
+        {
+          name: "荷塘月色假日酒店",
+          center: "113.93918,35.296522",
+          lng: "113.93918",
+          lat: "35.296522"
+        }
       ],
       driverschool: [
-        { name: "河南省工业科技学校", center: "113.873323,35.27589" },
-        { name: "河南科技学院", center: "113.938555,35.280375" }
+        {
+          name: "河南省工业科技学校",
+          center: "113.873323,35.27589",
+          lng: "113.873323",
+          lat: "35.27589"
+        },
+        {
+          name: "河南科技学院",
+          center: "113.938555,35.280375",
+          lng: "113.938555",
+          lat: "35.280375"
+        }
       ],
       tableData: [
         {
@@ -88,9 +151,9 @@ export default {
           chazhi_money: "-300000"
         }
       ],
-      drugStoreLayer: {},
-      hotelLayer: {},
-      driverschoolLayer: {},
+      drugStoreLayer: [],
+      hotelLayer: [],
+      driverschoolLayer: [],
       showDrugstore: true,
       showHotel: true,
       showDriverschool: true
@@ -106,6 +169,7 @@ export default {
         resizeEnable: true,
         zoom: 15
       });
+      this.infoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -30) });
 
       var autoOptions = {
         input: "tipinput"
@@ -128,86 +192,99 @@ export default {
     },
     // 创建药店点图层
     creatDrugstoreLayer() {
-      this.drugStoreLayer = new Loca.PointLayer({});
-      // this.drugStoreLayer.setMap(this.map);
-      this.drugStoreLayer.setData(this.drugstore, {
-        // 指定经纬度所在字段
-        lnglat: "center"
-      });
-      this.drugStoreLayer.setMap(this.map);
-      this.drugStoreLayer.setOptions({
-        style: {
-          // 圆形半径，单位像素
-          radius: 12,
-          // 填充颜色
-          color: "#ff0000",
-          // 描边颜色
-          borderColor: "#5a6aff",
-          // 描边宽度，单位像素
-          borderWidth: 1,
-          // 透明度 [0-1]
-          // opacity: this.showDrugstore ? 0.9 : 0
-          opacity: 0.9
-        }
-      });
-      this.drugStoreLayer.render();
+      for (let i = 0; i < this.drugstore.length; i++) {
+        let marker = new AMap.Marker({
+          // icon:
+            // "http://imga5.5054399.com/upload_pic/2019/5/16/4399_11240875591.jpg",
+          icon: "../image/poi-marker-default.png",
+          position: [this.drugstore[i].lng, this.drugstore[i].lat],
+          map: this.map
+          // offset: new AMap.Pixel(-13, -30)
+        });
+        marker.content =
+          "经度：" + this.drugstore[i].lng + "，纬度：" + this.drugstore[i].lat;
+        //可用来加文字
+        // marker.setLabel({
+        //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
+        //   content: "<div class='info'>我是 marker 的 label 标签</div>", //设置文本标注内容
+        //   direction: "right" //设置文本标注方位
+        // });
+        marker.on("click", this.markerClick);
+        // marker.emit("click", { target: marker });
+        this.drugStoreLayer.push(marker);
+      }
+    },
+    markerClick(e) {
+      console.log("aaa");
+      this.infoWindow.setContent(e.target.content);
+      this.infoWindow.open(this.map, e.target.getPosition());
     },
     // 创建酒店点图层
     creatHotelLayer() {
-      this.hotelLayer = new Loca.PointLayer({});
-      // this.drugStoreLayer.setMap(this.map);
-      this.hotelLayer.setData(this.hotel, {
-        // 指定经纬度所在字段
-        lnglat: "center"
-      });
-      this.hotelLayer.setMap(this.map);
-      this.hotelLayer.setOptions({
-        style: {
-          // 圆形半径，单位像素
-          radius: 12,
-          // 填充颜色
-          color: "#0000ff",
-          // 描边颜色
-          borderColor: "#5a6aff",
-          // 描边宽度，单位像素
-          borderWidth: 1,
-          // 透明度 [0-1]
-          // opacity: this.showDrugstore ? 0.9 : 0
-          opacity: 0.9
-        }
-      });
-      this.hotelLayer.render();
+      for (let i = 0; i < this.hotel.length; i++) {
+        let marker = new AMap.Marker({
+          icon:
+             "../image/poi-marker-fangkuai.png",
+          // icon: "../../image/poi-marker-fangkuai.png",
+          position: [this.hotel[i].lng, this.hotel[i].lat],
+          map: this.map
+          // offset: new AMap.Pixel(-13, -30)
+        });
+        marker.content =
+          "经度：" + this.hotel[i].lng + "，纬度：" + this.hotel[i].lat;
+        //可用来加文字
+        // marker.setLabel({
+        //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
+        //   content: "<div class='info'>我是 marker 的 label 标签</div>", //设置文本标注内容
+        //   direction: "right" //设置文本标注方位
+        // });
+        marker.on("click", this.markerClick);
+        // marker.emit("click", { target: marker });
+        this.hotelLayer.push(marker);
+      }
     },
     // 创建驾校点图层
     creatDriverschoolLayer() {
-      this.driverschoolLayer = new Loca.PointLayer({});
-      // this.drugStoreLayer.setMap(this.map);
-      this.driverschoolLayer.setData(this.driverschool, {
-        // 指定经纬度所在字段
-        lnglat: "center"
-      });
-      this.driverschoolLayer.setMap(this.map);
-      this.driverschoolLayer.setOptions({
-        style: {
-          // 圆形半径，单位像素
-          radius: 12,
-          // 填充颜色
-          color: "#00ff00",
-          // 描边颜色
-          borderColor: "#5a6aff",
-          // 描边宽度，单位像素
-          borderWidth: 1,
-          // 透明度 [0-1]
-          // opacity: this.showDrugstore ? 0.9 : 0
-          opacity: 0.9
-        }
-      });
-      this.driverschoolLayer.render();
+      for (let i = 0; i < this.driverschool.length; i++) {
+        let marker = new AMap.Marker({
+          icon:
+            "../image/poi-marker-sanjiao",
+          // icon: "../../image/poi-marker-default.png",
+          position: [this.driverschool[i].lng, this.driverschool[i].lat],
+          map: this.map
+          // offset: new AMap.Pixel(-13, -30)
+        });
+        marker.content =
+          "经度：" +
+          this.driverschool[i].lng +
+          "，纬度：" +
+          this.driverschool[i].lat;
+        //可用来加文字
+        // marker.setLabel({
+        //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
+        //   content: "<div class='info'>我是 marker 的 label 标签</div>", //设置文本标注内容
+        //   direction: "right" //设置文本标注方位
+        // });
+        marker.on("click", this.markerClick);
+        // marker.emit("click", { target: marker });
+        this.driverschoolLayer.push(marker);
+      }
     },
     // 切换图层显示与隐藏
     toggleLayer(showLayer, layerName) {
-      showLayer ? this[layerName].show() : this[layerName].hide();
+      if (!showLayer) {
+        for (let i = 0; i < this[layerName].length; i++) {
+          this[layerName][i].hide();
+        }
+      } else {
+        for (let i = 0; i < this[layerName].length; i++) {
+          this[layerName][i].show();
+        }
+      }
     },
+    // toggleLayer(showLayer, layerName) {
+    //   showLayer ? this[layerName].show() : this[layerName].hide();
+    // },
     // 加工具条
     addToolBar() {
       this.map.plugin(["AMap.ToolBar"], () => {
@@ -281,5 +358,3 @@ export default {
   padding: 0.75rem 1.25rem;
 }
 </style>
-
-   
