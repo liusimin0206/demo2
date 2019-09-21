@@ -67,19 +67,37 @@ export default {
           name: "新乡市中心医院",
           center: "113.865366,35.296382",
           lng: "113.865366",
-          lat: "35.296382"
+          lat: "35.296382",
+          id: "100000010",
+          tel: "0100-15533333",
+          state: "已缴费",
+          pay: "500000",
+          cal: "500000",
+          D_value: "0"
         },
         {
           name: "新乡医学院第三附属医院",
           center: "113.925962,35.280968",
           lng: "113.925962",
-          lat: "35.280968"
+          lat: "35.280968",
+          id: "100000011",
+          tel: "0100-15533333",
+          state: "未缴费",
+          pay: "0",
+          cal: "500000",
+          D_value: "-500000"
         },
         {
           name: "第二人民医院",
           center: "113.879099,35.315574",
           lng: "113.879099",
-          lat: "35.315574"
+          lat: "35.315574",
+          id: "100000012",
+          tel: "0100-15533333",
+          state: "缴费不足",
+          pay: "200000",
+          cal: "500000",
+          D_value: "-300000"
         }
       ],
       hotel: [
@@ -87,25 +105,49 @@ export default {
           name: "格林豪泰酒店",
           center: "113.883219,35.284612",
           lng: "113.883219",
-          lat: "35.284612"
+          lat: "35.284612",
+          id: "100000013",
+          tel: "0100-15533333",
+          state: "已缴费",
+          pay: "200000",
+          cal: "200000",
+          D_value: "0"
         },
         {
           name: "新乡国际饭店",
           center: "113.891716,35.29428",
           lng: "113.891716",
-          lat: "35.29428"
+          lat: "35.29428",
+          id: "100000014",
+          tel: "0100-15533333",
+          state: "缴费不足",
+          pay: "300000",
+          cal: "400000",
+          D_value: "-100000"
         },
         {
           name: "新乡开元名都大酒店",
           center: "113.926477,35.307729",
           lng: "113.926477",
-          lat: "35.307729"
+          lat: "35.307729",
+          id: "100000015",
+          tel: "0100-15533333",
+          state: "缴费不足",
+          pay: "300000",
+          cal: "400000",
+          D_value: "-100000"
         },
         {
           name: "荷塘月色假日酒店",
           center: "113.93918,35.296522",
           lng: "113.93918",
-          lat: "35.296522"
+          lat: "35.296522",
+          id: "100000016",
+          tel: "0100-15533333",
+          state: "已缴费",
+          pay: "400000",
+          cal: "400000",
+          D_value: "0"
         }
       ],
       driverschool: [
@@ -113,13 +155,25 @@ export default {
           name: "河南省工业科技学校",
           center: "113.873323,35.27589",
           lng: "113.873323",
-          lat: "35.27589"
+          lat: "35.27589",
+          id: "100000017",
+          tel: "0100-15533333",
+          state: "未缴费",
+          pay: "0",
+          cal: "400000",
+          D_value: "-400000"
         },
         {
           name: "河南科技学院",
           center: "113.938555,35.280375",
           lng: "113.938555",
-          lat: "35.280375"
+          lat: "35.280375",
+          id: "100000018",
+          tel: "0100-15533333",
+          state: "未缴费",
+          pay: "0",
+          cal: "400000",
+          D_value: "-400000"
         }
       ],
       tableData: [
@@ -196,7 +250,7 @@ export default {
         let marker = new AMap.Marker({
           // icon:
           // "http://imga5.5054399.com/upload_pic/2019/5/16/4399_11240875591.jpg",
-          icon: "../image/poi-marker-default.png",
+          icon: require("../image/poi-marker-default.png"),
           position: [this.drugstore[i].lng, this.drugstore[i].lat],
           map: this.map
           // offset: new AMap.Pixel(-13, -30)
@@ -223,7 +277,7 @@ export default {
     creatHotelLayer() {
       for (let i = 0; i < this.hotel.length; i++) {
         let marker = new AMap.Marker({
-          icon: "../image/poi-marker-fangkuai.png",
+          icon: require("../image/poi-marker-sanjiao.png"),
           // icon: "../../image/poi-marker-fangkuai.png",
           position: [this.hotel[i].lng, this.hotel[i].lat],
           map: this.map
@@ -246,7 +300,7 @@ export default {
     creatDriverschoolLayer() {
       for (let i = 0; i < this.driverschool.length; i++) {
         let marker = new AMap.Marker({
-          icon: "../image/poi-marker-sanjiao",
+          icon: require("../image/poi-marker-fangkuai.png"),
           // icon: "../../image/poi-marker-default.png",
           position: [this.driverschool[i].lng, this.driverschool[i].lat],
           map: this.map
