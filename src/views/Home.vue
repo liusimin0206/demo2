@@ -195,7 +195,7 @@ export default {
       for (let i = 0; i < this.drugstore.length; i++) {
         let marker = new AMap.Marker({
           // icon:
-            // "http://imga5.5054399.com/upload_pic/2019/5/16/4399_11240875591.jpg",
+          // "http://imga5.5054399.com/upload_pic/2019/5/16/4399_11240875591.jpg",
           icon: "../image/poi-marker-default.png",
           position: [this.drugstore[i].lng, this.drugstore[i].lat],
           map: this.map
@@ -223,8 +223,7 @@ export default {
     creatHotelLayer() {
       for (let i = 0; i < this.hotel.length; i++) {
         let marker = new AMap.Marker({
-          icon:
-             "../image/poi-marker-fangkuai.png",
+          icon: "../image/poi-marker-fangkuai.png",
           // icon: "../../image/poi-marker-fangkuai.png",
           position: [this.hotel[i].lng, this.hotel[i].lat],
           map: this.map
@@ -247,8 +246,7 @@ export default {
     creatDriverschoolLayer() {
       for (let i = 0; i < this.driverschool.length; i++) {
         let marker = new AMap.Marker({
-          icon:
-            "../image/poi-marker-sanjiao",
+          icon: "../image/poi-marker-sanjiao",
           // icon: "../../image/poi-marker-default.png",
           position: [this.driverschool[i].lng, this.driverschool[i].lat],
           map: this.map
