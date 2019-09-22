@@ -6,27 +6,30 @@
         <el-checkbox
           v-model="showDrugstore"
           @change="toggleLayer(showDrugstore, 'drugStoreLayer')"
-          >药店</el-checkbox
+          >药店 ○</el-checkbox
         >
       </div>
       <div class="input-item">
         <el-checkbox
           v-model="showHotel"
           @change="toggleLayer(showHotel, 'hotelLayer')"
-          >酒店</el-checkbox
+          >酒店 △</el-checkbox
         >
       </div>
       <div class="input-item">
         <el-checkbox
           v-model="showDriverschool"
           @change="toggleLayer(showDriverschool, 'driverschoolLayer')"
-          >驾校</el-checkbox
+          >驾校󠄀󠄀󠄀 </el-checkbox
         >
       </div>
     </div>
     <div id="myPageTop">
       请输入关键字：
       <input id="tipinput" />
+    </div>
+    <div id="myLegend">
+      <img src="../image/legend.png" height="40px" alt="图例" />
     </div>
     <div>
       <el-table
@@ -36,20 +39,11 @@
       >
         <el-table-column prop="id" label="纳税人识别号"></el-table-column>
         <el-table-column prop="name" label="纳税人姓名"></el-table-column>
-        <el-table-column
-          prop="tel_phone"
-          label="纳税人联系方式"
-        ></el-table-column>
-        <el-table-column prop="is_jiaona" label="交纳状态"></el-table-column>
-        <el-table-column
-          prop="shiji_money"
-          label="实际缴纳金额"
-        ></el-table-column>
-        <el-table-column
-          prop="yuji_money"
-          label="预计缴纳金额"
-        ></el-table-column>
-        <el-table-column prop="chazhi_money" label="缴纳差值"></el-table-column>
+        <el-table-column prop="tel" label="纳税人联系方式"></el-table-column>
+        <el-table-column prop="state" label="交纳状态"></el-table-column>
+        <el-table-column prop="pay" label="实际缴纳金额"></el-table-column>
+        <el-table-column prop="cal" label="预计缴纳金额"></el-table-column>
+        <el-table-column prop="D_value" label="缴纳差值"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -176,35 +170,6 @@ export default {
           D_value: "-400000"
         }
       ],
-      tableData: [
-        {
-          id: "10000010",
-          name: "张三",
-          tel_phone: "0100-15533333",
-          is_jiaona: "已缴费",
-          shiji_money: "500000",
-          yuji_money: "500000",
-          chazhi_money: "0"
-        },
-        {
-          id: "10000011",
-          name: "李四",
-          tel_phone: "0100-15533333",
-          is_jiaona: "未缴费",
-          shiji_money: "0",
-          yuji_money: "500000",
-          chazhi_money: "-500000"
-        },
-        {
-          id: "10000012",
-          name: "王五",
-          tel_phone: "0100-15533333",
-          is_jiaona: "已缴费",
-          shiji_money: "200000",
-          yuji_money: "500000",
-          chazhi_money: "-300000"
-        }
-      ],
       drugStoreLayer: [],
       hotelLayer: [],
       driverschoolLayer: [],
@@ -212,6 +177,14 @@ export default {
       showHotel: true,
       showDriverschool: true
     };
+  },
+  computed: {
+    tableData() {
+      return []
+        .concat(this.showDrugstore ? this.drugstore : [])
+        .concat(this.showHotel ? this.hotel : [])
+        .concat(this.showDriverschool ? this.driverschool : []);
+    }
   },
   mounted() {
     this.init();
@@ -246,15 +219,24 @@ export default {
     },
     // 创建药店点图层
     creatDrugstoreLayer() {
+      // this.tableData.push.apply(this.tableData, this.drugstore);
+      let iconName = "poi-marker-default";
       for (let i = 0; i < this.drugstore.length; i++) {
         let marker = new AMap.Marker({
-          // icon:
-          // "http://imga5.5054399.com/upload_pic/2019/5/16/4399_11240875591.jpg",
-          icon: require("../image/poi-marker-default.png"),
           position: [this.drugstore[i].lng, this.drugstore[i].lat],
           map: this.map
           // offset: new AMap.Pixel(-13, -30)
         });
+        if (this.drugstore[i].state == "已缴费") {
+          marker.setIcon(require("../image/" + iconName + "-green.png"));
+        } else if (this.drugstore[i].state == "未缴费") {
+          marker.setIcon(require("../image/" + iconName + "-red.png"));
+        } else if (this.drugstore[i].state == "缴费不足") {
+          marker.setIcon(require("../image/" + iconName + "-y.png"));
+        } else {
+          marker.setIcon(require("../image/" + iconName + ".png"));
+        }
+
         marker.content =
           "经度：" + this.drugstore[i].lng + "，纬度：" + this.drugstore[i].lat;
         //可用来加文字
@@ -268,6 +250,7 @@ export default {
         this.drugStoreLayer.push(marker);
       }
     },
+    //图层点击事件
     markerClick(e) {
       console.log("aaa");
       this.infoWindow.setContent(e.target.content);
@@ -275,6 +258,8 @@ export default {
     },
     // 创建酒店点图层
     creatHotelLayer() {
+      // this.tableData.push.apply(this.tableData, this.hotel);
+      let iconName = "poi-marker-sanjiao";
       for (let i = 0; i < this.hotel.length; i++) {
         let marker = new AMap.Marker({
           icon: require("../image/poi-marker-sanjiao.png"),
@@ -283,6 +268,16 @@ export default {
           map: this.map
           // offset: new AMap.Pixel(-13, -30)
         });
+
+        if (this.hotel[i].state == "已缴费") {
+          marker.setIcon(require("../image/" + iconName + "-green.png"));
+        } else if (this.hotel[i].state == "未缴费") {
+          marker.setIcon(require("../image/" + iconName + "-red.png"));
+        } else if (this.hotel[i].state == "缴费不足") {
+          marker.setIcon(require("../image/" + iconName + "-y.png"));
+        } else {
+          marker.setIcon(require("../image/" + iconName + ".png"));
+        }
         marker.content =
           "经度：" + this.hotel[i].lng + "，纬度：" + this.hotel[i].lat;
         //可用来加文字
@@ -298,6 +293,8 @@ export default {
     },
     // 创建驾校点图层
     creatDriverschoolLayer() {
+      // this.tableData.push.apply(this.tableData, this.driverschool);
+      let iconName = "poi-marker-fangkuai";
       for (let i = 0; i < this.driverschool.length; i++) {
         let marker = new AMap.Marker({
           icon: require("../image/poi-marker-fangkuai.png"),
@@ -306,6 +303,15 @@ export default {
           map: this.map
           // offset: new AMap.Pixel(-13, -30)
         });
+        if (this.driverschool[i].state == "已缴费") {
+          marker.setIcon(require("../image/" + iconName + "-green.png"));
+        } else if (this.driverschool[i].state == "未缴费") {
+          marker.setIcon(require("../image/" + iconName + "-red.png"));
+        } else if (this.driverschool[i].state == "缴费不足") {
+          marker.setIcon(require("../image/" + iconName + "-y.png"));
+        } else {
+          marker.setIcon(require("../image/" + iconName + ".png"));
+        }
         marker.content =
           "经度：" +
           this.driverschool[i].lng +
@@ -350,10 +356,19 @@ export default {
 };
 </script>
 <style>
+#container {
+  line-height: 18px;
+}
+#myLegend {
+  position: absolute;
+  left: 1200px;
+  top: 40px;
+  line-height: 18px;
+}
 #myPageTop {
   position: absolute;
   top: 40px;
-  left: 1100px;
+  left: 400px;
   line-height: 18px;
   font-size: 14px;
   background: none 0px 0px repeat scroll rgb(255, 255, 255);
