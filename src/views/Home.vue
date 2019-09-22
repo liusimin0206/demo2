@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div id="home">
     <div id="container" style="width:1150px; height:650px"></div>
     <div class="input-card">
       <div class="input-item">
@@ -31,7 +31,7 @@
     <div id="myLegend">
       <img src="../image/legend.png" height="40px" alt="图例" />
     </div>
-    <div>
+    <div id="table">
       <el-table
         :data="tableData"
         border
@@ -48,14 +48,42 @@
       </el-table>
     </div>
     <div id="search">
-      <el-input id="searchId" placeholder="请输入内容" v-model="searchId">
+      <el-input
+        class="searchInput"
+        id="searchId"
+        placeholder="全部"
+        v-model="searchId"
+      >
       </el-input>
-      <el-input id="searchName" placeholder="请输入内容" v-model="searchName">
+      <el-input
+        class="searchInput"
+        id="searchName"
+        placeholder="全部"
+        v-model="searchName"
+      >
       </el-input>
-      <el-input id="searchTel" placeholder="请输入内容" v-model="searchTel">
+      <el-input
+        class="searchInput"
+        id="searchTel"
+        placeholder="全部"
+        v-model="searchTel"
+      >
       </el-input>
-
-      <button>个体查询</button>
+      <el-select
+        id="searchState"
+        v-model="searchState"
+        style="width: 160px;"
+        placeholder="请选择"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <el-button id="searchSubmit" @click="searchSubmit">个体查询</el-button>
     </div>
   </div>
 </template>
@@ -190,7 +218,26 @@ export default {
       showDriverschool: true,
       searchId: "",
       searchName: "",
-      searchTel: ""
+      searchTel: "",
+      options: [
+        {
+          value: "",
+          label: "全部"
+        },
+        {
+          value: "已缴费",
+          label: "已缴费"
+        },
+        {
+          value: "未缴费",
+          label: "未缴费"
+        },
+        {
+          value: "缴费不足",
+          label: "缴费不足"
+        }
+      ],
+      searchState: ""
     };
   },
   computed: {
@@ -353,6 +400,30 @@ export default {
     // toggleLayer(showLayer, layerName) {
     //   showLayer ? this[layerName].show() : this[layerName].hide();
     // },
+    //查询
+    searchSubmit() {
+      let newResult = []
+        .concat(this.drugstore)
+        .concat(this.hotel)
+        .concat(this.driverschool);
+      console.log(newResult);
+      this.tableData = [];
+      for (let i = 0; i < newResult.length; i++) {
+        if (newResult[i].id.indexOf(this.searchId) != -1) {
+          if (newResult[i].name.indexOf(this.searchName) != -1) {
+            if (newResult[i].tel.indexOf(this.searchTel) != -1) {
+              if (newResult[i].state.indexOf(this.searchState) != -1) {
+                this.tableData.push(newResult[i]);
+              }
+            }
+          }
+        }
+      }
+      this.searchId = "";
+      this.searchName = "";
+      this.searchTel = "";
+      this.searchState = "";
+    },
     // 加工具条
     addToolBar() {
       this.map.plugin(["AMap.ToolBar"], () => {
@@ -365,94 +436,85 @@ export default {
   }
 };
 </script>
-<style>
-#search {
-  line-height: 0px;
-}
-#searchId {
-  position: absolute;
-  left: 0px;
-  display: inline;
-  width: 150px;
-}
-#searchName {
-  position: absolute;
-  left: 300px;
-  display: inline;
-  width: 150px;
-}
-#searchTel {
-  position: absolute;
-  left: 500px;
-  display: inline;
-  width: 150px;
-}
-#container {
-  line-height: 18px;
-}
-#myLegend {
-  position: absolute;
-  left: 1200px;
-  top: 40px;
-  line-height: 18px;
-}
-#myPageTop {
-  position: absolute;
-  top: 40px;
-  left: 400px;
-  line-height: 18px;
-  font-size: 14px;
-  background: none 0px 0px repeat scroll rgb(255, 255, 255);
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgb(204, 204, 204);
-  border-image: initial;
-  margin: 1px auto;
-  padding: 6px;
-}
-#tipinput {
-  width: 170px;
+<style lang="scss" scoped>
+#home {
+  .input-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    line-height: 35px;
+    border-radius: 0.25rem;
+    width: 10rem;
+    border-width: 0;
+    border-radius: 0.4rem;
+    box-shadow: 0 2px 6px 0 rgba(114, 124, 245, 0.5);
+    position: fixed;
+    bottom: 1rem;
+    left: 3rem;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 0.75rem 1.25rem;
+  }
+  #search {
+    margin: 10px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    .searchInput {
+      width: 150px;
+      margin-right: 15px;
+    }
+    #searchSubmit {
+      position: absolute;
+      left: 1300px;
+    }
+  }
+  #myPageTop {
+    position: absolute;
+    top: 40px;
+    left: 400px;
 
-  /* -webkit-writing-mode: horizontal-tb !important; */
-  text-rendering: auto;
-  color: initial;
-  letter-spacing: normal;
-  word-spacing: normal;
-  text-transform: none;
-  text-indent: 0px;
-  text-shadow: none;
-  display: inline-block;
-  text-align: start;
-  -webkit-appearance: textfield;
-  background-color: white;
-  -webkit-rtl-ordering: logical;
-  cursor: text;
-  margin: 0em;
-  font: 400 13.3333px Arial;
-  padding: 1px 0px;
-  border-width: 2px;
-  border-style: inset;
-  border-color: initial;
-  border-image: initial;
-}
-.input-card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  word-wrap: break-word;
-  background-color: #fff;
-  background-clip: border-box;
-  line-height: 35px;
-  border-radius: 0.25rem;
-  width: 10rem;
-  border-width: 0;
-  border-radius: 0.4rem;
-  box-shadow: 0 2px 6px 0 rgba(114, 124, 245, 0.5);
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
-  padding: 0.75rem 1.25rem;
+    font-size: 14px;
+    background: none 0px 0px repeat scroll rgb(255, 255, 255);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(204, 204, 204);
+    border-image: initial;
+    margin: 1px auto;
+    padding: 6px;
+    #tipinput {
+      width: 170px;
+
+      /* -webkit-writing-mode: horizontal-tb !important; */
+      text-rendering: auto;
+      color: initial;
+      letter-spacing: normal;
+      word-spacing: normal;
+      text-transform: none;
+      text-indent: 0px;
+      text-shadow: none;
+      display: inline-block;
+      text-align: start;
+      -webkit-appearance: textfield;
+      background-color: white;
+      -webkit-rtl-ordering: logical;
+      cursor: text;
+      margin: 0em;
+      font: 400 13.3333px Arial;
+      padding: 1px 0px;
+      border-width: 2px;
+      border-style: inset;
+      border-color: initial;
+      border-image: initial;
+    }
+  }
+  #myLegend {
+    position: absolute;
+    left: 1200px;
+    top: 40px;
+  }
 }
 </style>
