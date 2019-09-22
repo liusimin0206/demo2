@@ -36,6 +36,7 @@
         :data="tableData"
         border
         style=" width: 1150px;height: 100%; line-height: 18px;"
+        empty-text="查询结果"
       >
         <el-table-column prop="id" label="纳税人识别号"></el-table-column>
         <el-table-column prop="name" label="纳税人姓名"></el-table-column>
@@ -45,6 +46,16 @@
         <el-table-column prop="cal" label="预计缴纳金额"></el-table-column>
         <el-table-column prop="D_value" label="缴纳差值"></el-table-column>
       </el-table>
+    </div>
+    <div id="search">
+      <el-input id="searchId" placeholder="请输入内容" v-model="searchId">
+      </el-input>
+      <el-input id="searchName" placeholder="请输入内容" v-model="searchName">
+      </el-input>
+      <el-input id="searchTel" placeholder="请输入内容" v-model="searchTel">
+      </el-input>
+
+      <button>个体查询</button>
     </div>
   </div>
 </template>
@@ -56,6 +67,7 @@ export default {
     return {
       map: {},
       infoWindow: {},
+      tableData: [],
       drugstore: [
         {
           name: "新乡市中心医院",
@@ -175,16 +187,19 @@ export default {
       driverschoolLayer: [],
       showDrugstore: true,
       showHotel: true,
-      showDriverschool: true
+      showDriverschool: true,
+      searchId: "",
+      searchName: "",
+      searchTel: ""
     };
   },
   computed: {
-    tableData() {
-      return []
-        .concat(this.showDrugstore ? this.drugstore : [])
-        .concat(this.showHotel ? this.hotel : [])
-        .concat(this.showDriverschool ? this.driverschool : []);
-    }
+    // tableData() {
+    //   return []
+    //     .concat(this.showDrugstore ? this.drugstore : [])
+    //     .concat(this.showHotel ? this.hotel : [])
+    //     .concat(this.showDriverschool ? this.driverschool : []);
+    // }
   },
   mounted() {
     this.init();
@@ -196,6 +211,7 @@ export default {
         resizeEnable: true,
         zoom: 15
       });
+      this.map.setFeatures(["road", "bg", "building"]);
       this.infoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -30) });
 
       var autoOptions = {
@@ -237,8 +253,7 @@ export default {
           marker.setIcon(require("../image/" + iconName + ".png"));
         }
 
-        marker.content =
-          "经度：" + this.drugstore[i].lng + "，纬度：" + this.drugstore[i].lat;
+        marker.content = this.drugstore[i].name;
         //可用来加文字
         // marker.setLabel({
         //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
@@ -278,8 +293,7 @@ export default {
         } else {
           marker.setIcon(require("../image/" + iconName + ".png"));
         }
-        marker.content =
-          "经度：" + this.hotel[i].lng + "，纬度：" + this.hotel[i].lat;
+        marker.content = this.hotel[i].name;
         //可用来加文字
         // marker.setLabel({
         //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
@@ -312,11 +326,7 @@ export default {
         } else {
           marker.setIcon(require("../image/" + iconName + ".png"));
         }
-        marker.content =
-          "经度：" +
-          this.driverschool[i].lng +
-          "，纬度：" +
-          this.driverschool[i].lat;
+        marker.content = this.driverschool[i].name;
         //可用来加文字
         // marker.setLabel({
         //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
@@ -356,6 +366,27 @@ export default {
 };
 </script>
 <style>
+#search {
+  line-height: 0px;
+}
+#searchId {
+  position: absolute;
+  left: 0px;
+  display: inline;
+  width: 150px;
+}
+#searchName {
+  position: absolute;
+  left: 300px;
+  display: inline;
+  width: 150px;
+}
+#searchTel {
+  position: absolute;
+  left: 500px;
+  display: inline;
+  width: 150px;
+}
 #container {
   line-height: 18px;
 }
