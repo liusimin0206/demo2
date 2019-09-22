@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div id="home">
     <div id="container" style="width:1150px; height:650px"></div>
     <div class="input-card">
       <div class="input-item">
@@ -48,14 +48,22 @@
       </el-table>
     </div>
     <div id="search">
-      <el-input id="searchId" placeholder="请输入内容" v-model="searchId">
-      </el-input>
-      <el-input id="searchName" placeholder="请输入内容" v-model="searchName">
-      </el-input>
-      <el-input id="searchTel" placeholder="请输入内容" v-model="searchTel">
-      </el-input>
-
-      <button>个体查询</button>
+      <el-input
+        id="searchId"
+        placeholder="请输入内容"
+        v-model="searchId"
+      ></el-input>
+      <el-input
+        id="searchName"
+        placeholder="请输入内容"
+        v-model="searchName"
+      ></el-input>
+      <el-input
+        id="searchTel"
+        placeholder="请输入内容"
+        v-model="searchTel"
+      ></el-input>
+      <el-button>个体查询</el-button>
     </div>
   </div>
 </template>
@@ -365,27 +373,18 @@ export default {
   }
 };
 </script>
-<style>
-#search {
-  line-height: 0px;
-}
-#searchId {
-  position: absolute;
-  left: 0px;
-  display: inline;
-  width: 150px;
-}
-#searchName {
-  position: absolute;
-  left: 300px;
-  display: inline;
-  width: 150px;
-}
-#searchTel {
-  position: absolute;
-  left: 500px;
-  display: inline;
-  width: 150px;
+<style lang="scss" scoped>
+#home {
+  #search {
+    margin: 10px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    .el-input {
+      width: 100px;
+      margin-right: 20px;
+    }
+  }
 }
 #container {
   line-height: 18px;

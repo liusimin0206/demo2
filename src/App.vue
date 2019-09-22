@@ -52,7 +52,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #app {
   .el-container {
     height: 100%;
@@ -77,7 +77,6 @@
     background-color: #e9eef3;
     color: #333;
     text-align: center;
-    line-height: 160px;
   }
 }
 </style>
