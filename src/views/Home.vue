@@ -36,7 +36,7 @@
         :data="tableData"
         border
         style=" width: 1150px;height: 100%; line-height: 18px;"
-        empty-text="查询结果"
+        :empty-text="defaultresult"
       >
         <el-table-column prop="id" label="纳税人识别号"></el-table-column>
         <el-table-column prop="name" label="纳税人姓名"></el-table-column>
@@ -213,6 +213,7 @@ export default {
       drugStoreLayer: [],
       hotelLayer: [],
       driverschoolLayer: [],
+      resultMarkerArray: [],
       showDrugstore: true,
       showHotel: true,
       showDriverschool: true,
@@ -237,7 +238,8 @@ export default {
           label: "缴费不足"
         }
       ],
-      searchState: ""
+      searchState: "",
+      defaultresult: "查询结果"
     };
   },
   computed: {
@@ -324,8 +326,6 @@ export default {
       let iconName = "poi-marker-sanjiao";
       for (let i = 0; i < this.hotel.length; i++) {
         let marker = new AMap.Marker({
-          icon: require("../image/poi-marker-sanjiao.png"),
-          // icon: "../../image/poi-marker-fangkuai.png",
           position: [this.hotel[i].lng, this.hotel[i].lat],
           map: this.map
           // offset: new AMap.Pixel(-13, -30)
@@ -358,7 +358,6 @@ export default {
       let iconName = "poi-marker-fangkuai";
       for (let i = 0; i < this.driverschool.length; i++) {
         let marker = new AMap.Marker({
-          icon: require("../image/poi-marker-fangkuai.png"),
           // icon: "../../image/poi-marker-default.png",
           position: [this.driverschool[i].lng, this.driverschool[i].lat],
           map: this.map
@@ -402,11 +401,15 @@ export default {
     // },
     //查询
     searchSubmit() {
+      for (let i = 0; i < this.resultMarkerArray.length; i++) {
+        this.resultMarkerArray[i].hide();
+      }
+
       let newResult = []
         .concat(this.drugstore)
         .concat(this.hotel)
         .concat(this.driverschool);
-      console.log(newResult);
+
       this.tableData = [];
       for (let i = 0; i < newResult.length; i++) {
         if (newResult[i].id.indexOf(this.searchId) != -1) {
@@ -419,10 +422,36 @@ export default {
           }
         }
       }
-      this.searchId = "";
-      this.searchName = "";
-      this.searchTel = "";
-      this.searchState = "";
+      this.resultMarkerArray = [];
+      for (let i = 0; i < this.tableData.length; i++) {
+        let resultMarker = new AMap.Marker({
+          icon: require("../image/poi-marker-result.png"),
+          position: [this.tableData[i].lng, this.tableData[i].lat],
+          map: this.map
+          // offset: new AMap.Pixel(-13, -30)
+        });
+        resultMarker.content = this.tableData[i].name;
+        //可用来加文字
+        // marker.setLabel({
+        //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
+        //   content: "<div class='info'>我是 marker 的 label 标签</div>", //设置文本标注内容
+        //   direction: "right" //设置文本标注方位
+        // });
+        resultMarker.on("click", this.markerClick);
+        this.resultMarkerArray.push(resultMarker);
+      }
+      // 自动缩放地图
+      this.map.setFitView(
+        this.resultMarkerArray,
+        false,
+        [100, 100, 100, 100],
+        15
+      );
+      if (this.tableData.length == 0) {
+        this.defaultresult = "查询结果为空";
+      } else {
+        this.defaultresult = "查询结果";
+      }
     },
     // 加工具条
     addToolBar() {
@@ -468,8 +497,7 @@ export default {
       margin-right: 15px;
     }
     #searchSubmit {
-      position: absolute;
-      left: 1300px;
+      margin-left: 350px;
     }
   }
   #myPageTop {
