@@ -1,6 +1,7 @@
 <template>
   <div id="home">
     <div id="container" style="width:1150px; height:650px"></div>
+    <!-- 药店酒店驾校复选框 -->
     <div class="input-card">
       <div class="input-item">
         <el-checkbox
@@ -24,13 +25,16 @@
         >
       </div>
     </div>
+    <!-- 搜索框 -->
     <div id="myPageTop">
       请输入关键字：
       <input id="tipinput" />
     </div>
+    <!-- 图例 -->
     <div id="myLegend">
       <img src="../image/legend.png" height="40px" alt="图例" />
     </div>
+    <!-- 表格 -->
     <div id="table">
       <el-table
         :data="tableData"
@@ -47,6 +51,7 @@
         <el-table-column prop="D_value" label="缴纳差值"></el-table-column>
       </el-table>
     </div>
+    <!-- 表格查询 -->
     <div id="search">
       <el-input
         class="searchInput"
@@ -258,7 +263,7 @@ export default {
       this.map = new AMap.Map("container", {
         center: [113.875837, 35.298343],
         resizeEnable: true,
-        zoom: 15
+        zoom: 13
       });
       this.map.setFeatures(["road", "bg", "building"]);
       this.infoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -30) });
@@ -278,112 +283,73 @@ export default {
 
       this.addToolBar();
 
-      this.creatDrugstoreLayer();
-      this.creatHotelLayer();
-      this.creatDriverschoolLayer();
+      // this.creatDrugstoreLayer();
+      this.creatMarkerPointLayer(
+        this.drugstore,
+        this.drugStoreLayer,
+        "poi-marker-default"
+      );
+      this.creatMarkerPointLayer(
+        this.hotel,
+        this.hotelLayer,
+        "poi-marker-sanjiao"
+      );
+      this.creatMarkerPointLayer(
+        this.driverschool,
+        this.driverschoolLayer,
+        "poi-marker-fangkuai"
+      );
+      // this.creatHotelLayer();
+      // this.creatDriverschoolLayer();
     },
-    // 创建药店点图层
-    creatDrugstoreLayer() {
-      // this.tableData.push.apply(this.tableData, this.drugstore);
-      let iconName = "poi-marker-default";
-      for (let i = 0; i < this.drugstore.length; i++) {
+    // 创建pointdata的点图层
+    creatMarkerPointLayer(pointdata, layer, iconName) {
+      for (let i = 0; i < pointdata.length; i++) {
         let marker = new AMap.Marker({
-          position: [this.drugstore[i].lng, this.drugstore[i].lat],
+          position: [pointdata[i].lng, pointdata[i].lat],
           map: this.map
+
           // offset: new AMap.Pixel(-13, -30)
         });
-        if (this.drugstore[i].state == "已缴费") {
+        if (pointdata[i].state == "已缴费") {
           marker.setIcon(require("../image/" + iconName + "-green.png"));
-        } else if (this.drugstore[i].state == "未缴费") {
+        } else if (pointdata[i].state == "未缴费") {
           marker.setIcon(require("../image/" + iconName + "-red.png"));
-        } else if (this.drugstore[i].state == "缴费不足") {
+        } else if (pointdata[i].state == "缴费不足") {
           marker.setIcon(require("../image/" + iconName + "-y.png"));
         } else {
           marker.setIcon(require("../image/" + iconName + ".png"));
         }
 
-        marker.content = this.drugstore[i].name;
-        //可用来加文字
-        // marker.setLabel({
-        //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
-        //   content: "<div class='info'>我是 marker 的 label 标签</div>", //设置文本标注内容
-        //   direction: "right" //设置文本标注方位
-        // });
+        marker.content =
+          "<div >交纳状态:" +
+          pointdata[i].state +
+          "<br/>实际缴纳金额:" +
+          pointdata[i].pay +
+          "<br/>缴纳差值:" +
+          pointdata[i].D_value +
+          "</div>";
+        // 可用来加文字;
+        marker.setLabel({
+          offset: new AMap.Pixel(0, -4), //设置文本标注偏移量
+          content: "<div class='info'>" + pointdata[i].name + "</div>", //设置文本标注内容
+          direction: "top" //设置文本标注方位
+        });
         marker.on("click", this.markerClick);
         // marker.emit("click", { target: marker });
-        this.drugStoreLayer.push(marker);
+        layer.push(marker);
       }
     },
+
     //图层点击事件
     markerClick(e) {
-      console.log("aaa");
+      // console.log(e.target.content);
+      // let info=[];
+      // info.push.e.target.content;
       this.infoWindow.setContent(e.target.content);
       this.infoWindow.open(this.map, e.target.getPosition());
     },
-    // 创建酒店点图层
-    creatHotelLayer() {
-      // this.tableData.push.apply(this.tableData, this.hotel);
-      let iconName = "poi-marker-sanjiao";
-      for (let i = 0; i < this.hotel.length; i++) {
-        let marker = new AMap.Marker({
-          position: [this.hotel[i].lng, this.hotel[i].lat],
-          map: this.map
-          // offset: new AMap.Pixel(-13, -30)
-        });
 
-        if (this.hotel[i].state == "已缴费") {
-          marker.setIcon(require("../image/" + iconName + "-green.png"));
-        } else if (this.hotel[i].state == "未缴费") {
-          marker.setIcon(require("../image/" + iconName + "-red.png"));
-        } else if (this.hotel[i].state == "缴费不足") {
-          marker.setIcon(require("../image/" + iconName + "-y.png"));
-        } else {
-          marker.setIcon(require("../image/" + iconName + ".png"));
-        }
-        marker.content = this.hotel[i].name;
-        //可用来加文字
-        // marker.setLabel({
-        //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
-        //   content: "<div class='info'>我是 marker 的 label 标签</div>", //设置文本标注内容
-        //   direction: "right" //设置文本标注方位
-        // });
-        marker.on("click", this.markerClick);
-        // marker.emit("click", { target: marker });
-        this.hotelLayer.push(marker);
-      }
-    },
-    // 创建驾校点图层
-    creatDriverschoolLayer() {
-      // this.tableData.push.apply(this.tableData, this.driverschool);
-      let iconName = "poi-marker-fangkuai";
-      for (let i = 0; i < this.driverschool.length; i++) {
-        let marker = new AMap.Marker({
-          // icon: "../../image/poi-marker-default.png",
-          position: [this.driverschool[i].lng, this.driverschool[i].lat],
-          map: this.map
-          // offset: new AMap.Pixel(-13, -30)
-        });
-        if (this.driverschool[i].state == "已缴费") {
-          marker.setIcon(require("../image/" + iconName + "-green.png"));
-        } else if (this.driverschool[i].state == "未缴费") {
-          marker.setIcon(require("../image/" + iconName + "-red.png"));
-        } else if (this.driverschool[i].state == "缴费不足") {
-          marker.setIcon(require("../image/" + iconName + "-y.png"));
-        } else {
-          marker.setIcon(require("../image/" + iconName + ".png"));
-        }
-        marker.content = this.driverschool[i].name;
-        //可用来加文字
-        // marker.setLabel({
-        //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
-        //   content: "<div class='info'>我是 marker 的 label 标签</div>", //设置文本标注内容
-        //   direction: "right" //设置文本标注方位
-        // });
-        marker.on("click", this.markerClick);
-        // marker.emit("click", { target: marker });
-        this.driverschoolLayer.push(marker);
-      }
-    },
     // 切换图层显示与隐藏
     toggleLayer(showLayer, layerName) {
       if (!showLayer) {
@@ -423,6 +389,7 @@ export default {
         }
       }
       this.resultMarkerArray = [];
+
       for (let i = 0; i < this.tableData.length; i++) {
         let resultMarker = new AMap.Marker({
           icon: require("../image/poi-marker-result.png"),
@@ -430,7 +397,15 @@ export default {
           map: this.map
           // offset: new AMap.Pixel(-13, -30)
         });
-        resultMarker.content = this.tableData[i].name;
+        resultMarker.content =
+          "<div >交纳状态:" +
+          this.tableData[i].state +
+          "<br/>实际缴纳金额:" +
+          this.tableData[i].pay +
+          "<br/>缴纳差值:" +
+          this.tableData[i].D_value +
+          "</div>";
+
         //可用来加文字
         // marker.setLabel({
         //   offset: new AMap.Pixel(20, 20), //设置文本标注偏移量
@@ -467,6 +442,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 #home {
+  #container {
+  }
   .input-card {
     display: flex;
     flex-direction: column;
