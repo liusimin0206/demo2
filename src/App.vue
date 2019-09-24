@@ -9,20 +9,19 @@
           <el-menu default-active="$router.path" router>
             <!-- 类似的添加导航菜单 index传值代表路由跳转 -->
 
-            <el-menu-item index="/">
+            <el-menu-item index="/" @click="changeLayersShow">
               <i class="el-icon-menu"></i>
               <span slot="title">图层显示</span>
             </el-menu-item>
-            <!-- <el-menu-item-group> -->
-            <!--            <template slot="title">分组一</template>-->
-            <!-- <el-menu-item index="/"><el-checkbox label="药店" ></el-checkbox>
+            <el-menu-item-group>
+              <el-menu-item v-for="item in layers" :key="item.layerName">
+                <el-checkbox
+                  :label="item.name"
+                  v-model="item.show"
+                ></el-checkbox>
               </el-menu-item>
-              <el-menu-item index="/"><el-checkbox label="酒店"></el-checkbox>
-                </el-menu-item>
-              <el-menu-item index="/"><el-checkbox label="驾校"></el-checkbox></el-menu-item> -->
-
-            <!-- </el-menu-item-group> -->
-            <el-submenu index="">
+            </el-menu-item-group>
+            <el-submenu index>
               <template slot="title">
                 <i class="el-icon-menu"></i>
                 <span>汇总报表</span>
@@ -43,14 +42,41 @@
         </el-aside>
         <!-- 右侧主视图 -->
         <el-main>
-          <router-view />
+          <router-view :layers="layers" />
         </el-main>
       </el-container>
-      <!-- footer -->
-      <!--      <el-footer height="1px">Footer</el-footer>-->
     </el-container>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      layers: {
+        drugstore: {
+          show: true,
+          name: "药店 ○"
+        },
+        hotel: {
+          show: true,
+          name: "酒店 △"
+        },
+        driverSchool: {
+          show: true,
+          name: "驾校󠄀󠄀 "
+        }
+      }
+    };
+  },
+  methods: {
+    changeLayersShow() {
+      this.layers.drugstore.show = true;
+      this.layers.hotel.show = true;
+      this.layers.driverSchool.show = true;
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 #app {
