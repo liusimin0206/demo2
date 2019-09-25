@@ -1,30 +1,6 @@
 <template>
   <div id="home">
     <div id="container" style="width:1150px; height:650px"></div>
-    <!-- 药店酒店驾校复选框 -->
-    <!-- <div class="input-card">
-      <div class="input-item">
-        <el-checkbox
-          v-model="showDrugstore"
-          @change="toggleLayer(showDrugstore, 'drugStoreLayer')"
-          >药店 ○</el-checkbox
-        >
-      </div>
-      <div class="input-item">
-        <el-checkbox
-          v-model="showHotel"
-          @change="toggleLayer(showHotel, 'hotelLayer')"
-          >酒店 △</el-checkbox
-        >
-      </div>
-      <div class="input-item">
-        <el-checkbox
-          v-model="showDriverschool"
-          @change="toggleLayer(showDriverschool, 'driverSchoolLayer')"
-          >驾校󠄀󠄀󠄀 </el-checkbox
-        >
-      </div>
-    </div> -->
     <!-- 搜索框 -->
     <div id="myPageTop">
       请输入关键字：
