@@ -1,7 +1,12 @@
 <template>
   <div class="SumOfHotel" @click="screenRule = false">
     <div id="table">
-      <el-table :data="tableData" border style="width: 100%;line-height:18px">
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%;line-height:18px"
+        max-height="850"
+      >
         <el-table-column prop="business" label="纳税行业"></el-table-column>
         <el-table-column prop="time" label="纳税时间"></el-table-column>
         <el-table-column prop="MSection" label="管理科室"></el-table-column>
@@ -249,6 +254,9 @@ export default {
       // 绘制图表
       // var arr = [1, 2, 3, 4, 5, 6];
       var option = {
+        title: {
+          text: "酒店行业预期财政收入与实际收入"
+        },
         tooltip: {
           /*鼠标跟随效果*/
           trigger: "axis"
