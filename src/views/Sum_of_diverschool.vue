@@ -362,7 +362,7 @@ export default {
     justify-content: flex-start;
     align-items: center;
     .searchInput {
-      width: 150px;
+      width: 170px;
       margin-left: 145px;
       margin-right: 5px;
     }
