@@ -28,14 +28,14 @@
               </template>
               <el-menu-item index="/about1">全市历年税收情况</el-menu-item>
               <el-menu-item index="/about">各行业税收比</el-menu-item>
+              <el-menu-item index="/sum_of_drugstore"
+                >药店行业税收汇总</el-menu-item
+              >
               <el-menu-item index="/sum_of_hotel"
                 >酒店行业税收汇总</el-menu-item
               >
               <el-menu-item index="/sum_of_diverschool"
                 >驾校行业税收汇总</el-menu-item
-              >
-              <el-menu-item index="/sum_of_drugstore"
-                >药店行业税收汇总</el-menu-item
               >
             </el-submenu>
           </el-menu>

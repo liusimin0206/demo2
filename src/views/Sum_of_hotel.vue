@@ -13,6 +13,7 @@
     </div>
     <div id="search">
       <el-input
+        type="month"
         class="searchInput"
         id="startTime"
         placeholder="无限制"
@@ -288,7 +289,7 @@ export default {
               /*坐标轴的刻度文字设置*/
               formatter: "{value} 元",
               textStyle: {
-                color: "yellowgreen"
+                color: "black"
               }
             },
             splitLine: {
