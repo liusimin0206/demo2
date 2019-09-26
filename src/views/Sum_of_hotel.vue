@@ -17,23 +17,21 @@
       </el-table>
     </div>
     <div id="search">
-      <el-input
-        type="month"
+      <el-date-picker
         class="searchInput"
-        id="startTime"
-        placeholder="无限制"
         v-model="startTime"
-      >
-      </el-input>
-      <span>起始日期</span>
-      <el-input
         type="month"
-        class="searchInput"
-        id="endTime"
-        placeholder="无限制"
-        v-model="endTime"
+        placeholder="选择日期"
       >
-      </el-input>
+      </el-date-picker>
+      <span>起始日期</span>
+      <el-date-picker
+        class="searchInput"
+        v-model="endTime"
+        type="month"
+        placeholder="选择日期"
+      >
+      </el-date-picker>
       <span>终止日期</span>
       <el-button id="searchSubmit" @click="searchSubmit">查询</el-button>
     </div>
