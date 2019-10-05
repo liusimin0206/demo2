@@ -81,7 +81,7 @@ export default {
       tableData: [],
       drugstore: [],
       hotel: [],
-      driverschool: [],
+      driverSchool: [],
       drugStoreLayer: [],
       hotelLayer: [],
       driverSchoolLayer: [],
@@ -844,25 +844,30 @@ export default {
   // computed: {
   //   a(){return this.layers.drugstore.show} ,
   //   b(){return this.layers.hotel.show},
-  //   c(){return this.layers.driverschool.show},
+  //   c(){return this.layers.driverSchool.show},
   // },
   mounted() {
-    try {
-      // 离线版
-      throw "error";
-      // this.$http.get("/api/layers").then(res => {
-      //   const data = res.data;
-      //   this.drugstore = data.drugstore;
-      //   this.hotel = data.hotel;
-      //   this.driverschool = data.driverSchool;
-      //   this.init();
-      // });
-    } catch (e) {
-      this.drugstore = this.OffLineData.drugstore;
-      this.hotel = this.OffLineData.hotel;
-      this.driverschool = this.OffLineData.driverSchool;
-      this.init();
-    }
+    // try {
+    // 离线版
+
+    this.$http
+      .get(
+        "/homework1_4_war/rest/demo/query_user_by_id?user_id=1000001&tdsourcetag=s_pctim_aiomsg"
+      )
+      .then(res => {
+        const data = res.data;
+        this.drugstore = data.drugstore;
+        this.hotel = data.hotel;
+        this.driverSchool = data.driverSchool;
+        this.init();
+      });
+    // }
+    // catch (e) {
+    //   this.drugstore = this.OffLineData.drugstore;
+    //   this.hotel = this.OffLineData.hotel;
+    //   this.driverSchool = this.OffLineData.driverSchool;
+    //   this.init();
+    // }
   },
   methods: {
     init() {
@@ -901,7 +906,7 @@ export default {
         "poi-marker-sanjiao"
       );
       this.creatMarkerPointLayer(
-        this.driverschool,
+        this.driverSchool,
         this.driverSchoolLayer,
         "poi-marker-fangkuai"
       );
@@ -980,7 +985,7 @@ export default {
       let newResult = []
         .concat(this.drugstore)
         .concat(this.hotel)
-        .concat(this.driverschool);
+        .concat(this.driverSchool);
 
       this.tableData = [];
       for (let i = 0; i < newResult.length; i++) {
