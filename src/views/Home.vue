@@ -851,15 +851,18 @@ export default {
     // 离线版
 
     this.$http
-      .get(
-        "/homework1_4_war/rest/demo/query_user_by_id?user_id=1000001&tdsourcetag=s_pctim_aiomsg"
-      )
+      .get("/homework1_4_war/rest/demo/query_layer?layerid=1", {
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8"
+        }
+      })
       .then(res => {
-        const data = res.data;
-        this.drugstore = data.drugstore;
-        this.hotel = data.hotel;
-        this.driverSchool = data.driverSchool;
-        this.init();
+        // const data = res.data;
+        // this.drugstore = data.drugstore;
+        // this.hotel = data.hotel;
+        // this.driverSchool = data.driverSchool;
+        // this.init();
+        console.log(JSON.parse(JSON.stringify(res)));
       });
     // }
     // catch (e) {
