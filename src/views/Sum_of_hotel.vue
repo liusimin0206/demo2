@@ -19,20 +19,17 @@
     <div id="search">
       <el-date-picker
         class="searchInput"
-        v-model="startTime"
-        type="month"
-        placeholder="选择日期"
+        v-model="value2"
+        value-format="yyyy-MM"
+        type="monthrange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始月份"
+        end-placeholder="结束月份"
+        :picker-options="pickerOptions"
       >
       </el-date-picker>
-      <span>起始日期</span>
-      <el-date-picker
-        class="searchInput"
-        v-model="endTime"
-        type="month"
-        placeholder="选择日期"
-      >
-      </el-date-picker>
-      <span>终止日期</span>
       <el-button id="searchSubmit" @click="searchSubmit">查询</el-button>
     </div>
     <div id="drawChart">
@@ -50,192 +47,71 @@
 export default {
   data() {
     return {
-      hotelData: [
-        {
-          business: "酒店",
-          time: "2018-01",
-          MSection: "xxxxx",
-          tel: "0373-2284888",
-          pay: "5003000",
-          cal: "5000000",
-          D_value: "3000"
-        },
-        {
-          business: "酒店",
-          time: "2018-02",
-          MSection: "xxxxx",
-          tel: "0373-2888888",
-          pay: "4850000",
-          cal: "4500000",
-          D_value: "350000"
-        },
-        {
-          business: "酒店",
-          time: "2018-03",
-          MSection: "xxxxx",
-          tel: "0373-2355888",
-          pay: "6565000",
-          cal: "6500000",
-          D_value: "65000"
-        },
-        {
-          business: "酒店",
-          time: "2018-04",
-          MSection: "xxxxx",
-          tel: "0373-2488588",
-          pay: "5455210",
-          cal: "5000000",
-          D_value: "455210"
-        },
-        {
-          business: "酒店",
-          time: "2018-05",
-          MSection: "xxxxx",
-          tel: "0373-2877888",
-          pay: "5543624",
-          cal: "4958321",
-          D_value: "585303"
-        },
-        {
-          business: "酒店",
-          time: "2018-06",
-          MSection: "xxxxx",
-          tel: "0373-2588644",
-          pay: "5335211",
-          cal: "5211300",
-          D_value: "123911"
-        },
-        {
-          business: "酒店",
-          time: "2018-07",
-          MSection: "xxxxx",
-          tel: "0373-2388588",
-          pay: "4833254",
-          cal: "5332000",
-          D_value: "-498746"
-        },
-        {
-          business: "酒店",
-          time: "2018-08",
-          MSection: "xxxxx",
-          tel: "0373-2258888",
-          pay: "5210354",
-          cal: "5133255",
-          D_value: "77099"
-        },
-        {
-          business: "酒店",
-          time: "2018-09",
-          MSection: "xxxxx",
-          tel: "0373-2688388",
-          pay: "6455300",
-          cal: "6000000",
-          D_value: "455300"
-        },
-        {
-          business: "酒店",
-          time: "2018-10",
-          MSection: "xxxxx",
-          tel: "0373-2855666",
-          pay: "6638000",
-          cal: "6300000",
-          D_value: "338000"
-        },
-        {
-          business: "酒店",
-          time: "2018-11",
-          MSection: "xxxxx",
-          tel: "0373-2655888",
-          pay: "6011322",
-          cal: "6300000",
-          D_value: "-288678"
-        },
-        {
-          business: "酒店",
-          time: "2018-12",
-          MSection: "xxxxx",
-          tel: "0373-2655555",
-          pay: "5355800",
-          cal: "6100800",
-          D_value: "-745000"
-        },
-        {
-          business: "酒店",
-          time: "2019-01",
-          MSection: "xxxxx",
-          tel: "0373-2633433",
-          pay: "5100388",
-          cal: "5600344",
-          D_value: "-499956"
-        },
-        {
-          business: "酒店",
-          time: "2019-02",
-          MSection: "xxxxx",
-          tel: "0373-2688455",
-          pay: "4958880",
-          cal: "5233500",
-          D_value: "-274620"
-        },
-        {
-          business: "酒店",
-          time: "2019-03",
-          MSection: "xxxxx",
-          tel: "0373-2588188",
-          pay: "5135288",
-          cal: "4935888",
-          D_value: "199400"
-        },
-        {
-          business: "酒店",
-          time: "2019-04",
-          MSection: "xxxxx",
-          tel: "0373-2388288",
-          pay: "5358830",
-          cal: "5213550",
-          D_value: "145280"
-        },
-        {
-          business: "酒店",
-          time: "2019-05",
-          MSection: "xxxxx",
-          tel: "0373-2155888",
-          pay: "5355888",
-          cal: "5644380",
-          D_value: "-288492"
-        },
-        {
-          business: "酒店",
-          time: "2019-06",
-          MSection: "xxxxx",
-          tel: "0373-2358666",
-          pay: "5432880",
-          cal: "5777808",
-          D_value: "-344928"
-        }
-      ],
+      hotelData: [],
       tableData: [],
       screenRule: false,
-      startTime: "",
-      endTime: ""
+
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "本月",
+            onClick(picker) {
+              picker.$emit("pick", [new Date(), new Date()]);
+            }
+          },
+          {
+            text: "今年至今",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date(new Date().getFullYear(), 0);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近六个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setMonth(start.getMonth() - 6);
+              picker.$emit("pick", [start, end]);
+            }
+          }
+        ]
+      },
+      //存放时间段
+      value2: ["", ""]
     };
   },
   mounted() {
-    this.init();
-    this.drawLine(this.tableData);
+    this.init(this.processTime);
   },
   computed: {
+    processTime() {
+      let start = this.value2[0] == "" ? "0-0" : this.value2[0];
+      let end = this.value2[1] == "" ? "9999-0" : this.value2[1];
+      return { startTime: start, endTime: end };
+    },
     changeScreenRule() {
       return this.screenRule ? "block" : "none";
     }
   },
   methods: {
-    init() {
-      this.tableData = this.hotelData;
+    init(timeOb) {
+      let url =
+        "/homework1_4_war/rest/demo/query_hangye?hangye=2&betime=" +
+        timeOb.startTime +
+        "&edtime=" +
+        timeOb.endTime;
+      this.$http.get(url).then(res => {
+        const data = res.data;
+        this.hotelData = data.value;
+        this.tableData = this.hotelData;
+        this.drawLine(this.tableData);
+      });
     },
     // 依据时间查询
     searchSubmit() {
-      alert("依据时间查询");
+      this.init(this.processTime);
     },
     drawLine(tData) {
       // 基于准备好的dom，初始化echarts实例
@@ -360,8 +236,7 @@ export default {
     justify-content: flex-start;
     align-items: center;
     .searchInput {
-      width: 170px;
-      margin-left: 145px;
+      margin-left: 200px;
       margin-right: 5px;
     }
     #searchSubmit {

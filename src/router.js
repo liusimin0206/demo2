@@ -1,11 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
-import About from "./views/About.vue";
-import About1 from "./views/About1.vue";
-import Sum_of_hotel from "./views/Sum_of_hotel.vue";
-import Sum_of_drugstore from "./views/Sum_of_drugstore.vue";
-import Sum_of_diverschool from "./views/Sum_of_diverschool.vue";
 
 Vue.use(Router);
 
@@ -16,32 +10,32 @@ export default new Router({
     {
       path: "/",
       name: "home",
-      component: Home
+      component: () => import("./views/Home.vue")
     },
     {
       path: "/about",
       name: "about",
-      component: About
+      component: () => import("./views/About.vue")
     },
     {
       path: "/about1",
       name: "about1",
-      component: About1
+      component: () => import("./views/About1.vue")
     },
     {
       path: "/sum_of_hotel",
       name: "sum_of_hotel",
-      component: Sum_of_hotel
+      component: () => import("./views/Sum_of_hotel.vue")
     },
     {
       path: "/sum_of_drugstore",
       name: "sum_of_drugstore",
-      component: Sum_of_drugstore
+      component: () => import("./views/Sum_of_drugstore.vue")
     },
     {
       path: "/sum_of_diverschool",
       name: "sum_of_diverschool",
-      component: Sum_of_diverschool
+      component: () => import("./views/Sum_of_diverschool.vue")
     }
   ]
 });

@@ -19,20 +19,17 @@
     <div id="search">
       <el-date-picker
         class="searchInput"
-        v-model="startTime"
-        type="month"
-        placeholder="选择日期"
+        v-model="value2"
+        value-format="yyyy-MM"
+        type="monthrange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始月份"
+        end-placeholder="结束月份"
+        :picker-options="pickerOptions"
       >
       </el-date-picker>
-      <span>起始日期</span>
-      <el-date-picker
-        class="searchInput"
-        v-model="endTime"
-        type="month"
-        placeholder="选择日期"
-      >
-      </el-date-picker>
-      <span>终止日期</span>
       <el-button id="searchSubmit" @click="searchSubmit">查询</el-button>
     </div>
     <div id="drawChart">
@@ -50,192 +47,71 @@
 export default {
   data() {
     return {
-      driverSchoolData: [
-        {
-          business: "驾校",
-          time: "2018-01",
-          MSection: "xxxxx",
-          tel: "010-15533333",
-          pay: "200000",
-          cal: "500000",
-          D_value: "-300000"
-        },
-        {
-          business: "驾校",
-          time: "2018-02",
-          MSection: "xxxxx",
-          tel: "15534623383",
-          pay: "500000",
-          cal: "480000",
-          D_value: "-20000"
-        },
-        {
-          business: "驾校",
-          time: "2018-03",
-          MSection: "xxxxx",
-          tel: "18235131566",
-          pay: "400000",
-          cal: "500000",
-          D_value: "-100000"
-        },
-        {
-          business: "驾校",
-          time: "2018-04",
-          MSection: "xxxxx",
-          tel: "17856052333",
-          pay: "530000",
-          cal: "500000",
-          D_value: "300000"
-        },
-        {
-          business: "驾校",
-          time: "2018-05",
-          MSection: "xxxxx",
-          tel: "17135347966",
-          pay: "380000",
-          cal: "240000",
-          D_value: "140000"
-        },
-        {
-          business: "驾校",
-          time: "2018-06",
-          MSection: "xxxxx",
-          tel: "13513691355",
-          pay: "372411",
-          cal: "321104",
-          D_value: "51307"
-        },
-        {
-          business: "驾校",
-          time: "2018-07",
-          MSection: "xxxxx",
-          tel: "13544556677",
-          pay: "516087",
-          cal: "467705",
-          D_value: "48382"
-        },
-        {
-          business: "驾校",
-          time: "2018-08",
-          MSection: "xxxxx",
-          tel: "13665656444",
-          pay: "465577",
-          cal: "513222",
-          D_value: "-47645"
-        },
-        {
-          business: "驾校",
-          time: "2018-09",
-          MSection: "xxxxx",
-          tel: "17888664543",
-          pay: "645646",
-          cal: "564483",
-          D_value: "81163"
-        },
-        {
-          business: "驾校",
-          time: "2018-10",
-          MSection: "xxxxx",
-          tel: "16315567877",
-          pay: "365443",
-          cal: "436621",
-          D_value: "-71178"
-        },
-        {
-          business: "驾校",
-          time: "2018-11",
-          MSection: "xxxxx",
-          tel: "18235444633",
-          pay: "456661",
-          cal: "543321",
-          D_value: "-86660"
-        },
-        {
-          business: "驾校",
-          time: "2018-12",
-          MSection: "xxxxx",
-          tel: "15135446654",
-          pay: "656544",
-          cal: "589921",
-          D_value: "66623"
-        },
-        {
-          business: "驾校",
-          time: "2019-01",
-          MSection: "xxxxx",
-          tel: "15535452456",
-          pay: "376500",
-          cal: "424355",
-          D_value: "-47855"
-        },
-        {
-          business: "驾校",
-          time: "2019-02",
-          MSection: "xxxxx",
-          tel: "13845645533",
-          pay: "456553",
-          cal: "432000",
-          D_value: "24553"
-        },
-        {
-          business: "驾校",
-          time: "2019-03",
-          MSection: "xxxxx",
-          tel: "13154536688",
-          pay: "325645",
-          cal: "453000",
-          D_value: "-127355"
-        },
-        {
-          business: "驾校",
-          time: "2019-04",
-          MSection: "xxxxx",
-          tel: "13643547877",
-          pay: "365548",
-          cal: "356545",
-          D_value: "9003"
-        },
-        {
-          business: "驾校",
-          time: "2019-05",
-          MSection: "xxxxx",
-          tel: "13125556888",
-          pay: "456655",
-          cal: "395555",
-          D_value: "61100"
-        },
-        {
-          business: "驾校",
-          time: "2019-06",
-          MSection: "xxxxx",
-          tel: "13513354566",
-          pay: "335455",
-          cal: "355400",
-          D_value: "-19945"
-        }
-      ],
+      driverSchoolData: [],
       tableData: [],
       screenRule: false,
-      startTime: "",
-      endTime: ""
+
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "本月",
+            onClick(picker) {
+              picker.$emit("pick", [new Date(), new Date()]);
+            }
+          },
+          {
+            text: "今年至今",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date(new Date().getFullYear(), 0);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近六个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setMonth(start.getMonth() - 6);
+              picker.$emit("pick", [start, end]);
+            }
+          }
+        ]
+      },
+      //存放时间段
+      value2: ["", ""]
     };
   },
   mounted() {
-    this.init();
-    this.drawLine(this.tableData);
+    this.init(this.processTime);
   },
   computed: {
+    processTime() {
+      let start = this.value2[0] == "" ? "0-0" : this.value2[0];
+      let end = this.value2[1] == "" ? "9999-0" : this.value2[1];
+      return { startTime: start, endTime: end };
+    },
     changeScreenRule() {
       return this.screenRule ? "block" : "none";
     }
   },
   methods: {
-    init() {
-      this.tableData = this.driverSchoolData;
+    init(timeOb) {
+      let url =
+        "/homework1_4_war/rest/demo/query_hangye?hangye=1&betime=" +
+        timeOb.startTime +
+        "&edtime=" +
+        timeOb.endTime;
+      this.$http.get(url).then(res => {
+        const data = res.data;
+        this.driverSchoolData = data.value;
+        this.tableData = this.driverSchoolData;
+        this.drawLine(this.tableData);
+      });
     },
     // 依据时间查询
     searchSubmit() {
-      alert("依据时间查询");
+      this.init(this.processTime);
     },
     drawLine(tData) {
       // 基于准备好的dom,初始化echarts实例
@@ -352,16 +228,14 @@ export default {
 <style lang="scss" scoped>
 .SumOfDriverSchool {
   background: white;
-  #table {
-  }
+
   #search {
     margin: 10px 0;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     .searchInput {
-      width: 170px;
-      margin-left: 145px;
+      margin-left: 200px;
       margin-right: 5px;
     }
     #searchSubmit {

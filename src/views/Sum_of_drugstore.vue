@@ -19,20 +19,17 @@
     <div id="search">
       <el-date-picker
         class="searchInput"
-        v-model="startTime"
-        type="month"
-        placeholder="选择日期"
+        v-model="value2"
+        value-format="yyyy-MM"
+        type="monthrange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始月份"
+        end-placeholder="结束月份"
+        :picker-options="pickerOptions"
       >
       </el-date-picker>
-      <span>起始日期</span>
-      <el-date-picker
-        class="searchInput"
-        v-model="endTime"
-        type="month"
-        placeholder="选择日期"
-      >
-      </el-date-picker>
-      <span>终止日期</span>
       <el-button id="searchSubmit" @click="searchSubmit">查询</el-button>
     </div>
     <div id="drawChart">
@@ -50,192 +47,70 @@
 export default {
   data() {
     return {
-      drugStoreData: [
-        {
-          business: "药店",
-          time: "2018-01",
-          MSection: "xxxxx",
-          tel: "0373-2655888",
-          pay: "383233",
-          cal: "500000",
-          D_value: "-116767"
-        },
-        {
-          business: "药店",
-          time: "2018-02",
-          MSection: "xxxxx",
-          tel: "0373-2438858",
-          pay: "432850",
-          cal: "465000",
-          D_value: "-32150"
-        },
-        {
-          business: "药店",
-          time: "2018-03",
-          MSection: "xxxxx",
-          tel: "16559453466",
-          pay: "465280",
-          cal: "476580",
-          D_value: "-11300"
-        },
-        {
-          business: "药店",
-          time: "2018-04",
-          MSection: "xxxxx",
-          tel: "13121335948",
-          pay: "483500",
-          cal: "513500",
-          D_value: "-30000"
-        },
-        {
-          business: "药店",
-          time: "2018-05",
-          MSection: "xxxxx",
-          tel: "0373-2165888",
-          pay: "513540",
-          cal: "483560",
-          D_value: "29980"
-        },
-        {
-          business: "药店",
-          time: "2018-06",
-          MSection: "xxxxx",
-          tel: "0373-2588688",
-          pay: "535540",
-          cal: "513580",
-          D_value: "21960"
-        },
-        {
-          business: "药店",
-          time: "2018-07",
-          MSection: "xxxxx",
-          tel: "13586456677",
-          pay: "554836",
-          cal: "532144",
-          D_value: "22692"
-        },
-        {
-          business: "药店",
-          time: "2018-08",
-          MSection: "xxxxx",
-          tel: "0373-2588466",
-          pay: "514355",
-          cal: "534500",
-          D_value: "-20145"
-        },
-        {
-          business: "药店",
-          time: "2018-09",
-          MSection: "xxxxx",
-          tel: "0373-2533455",
-          pay: "513122",
-          cal: "493325",
-          D_value: "19797"
-        },
-        {
-          business: "药店",
-          time: "2018-10",
-          MSection: "xxxxx",
-          tel: "13515556455",
-          pay: "532580",
-          cal: "483500",
-          D_value: "49080"
-        },
-        {
-          business: "药店",
-          time: "2018-11",
-          MSection: "xxxxx",
-          tel: "0373-2356888",
-          pay: "523500",
-          cal: "533550",
-          D_value: "-10050"
-        },
-        {
-          business: "药店",
-          time: "2018-12",
-          MSection: "xxxxx",
-          tel: "0373-2658588",
-          pay: "514500",
-          cal: "493855",
-          D_value: "20645"
-        },
-        {
-          business: "药店",
-          time: "2019-01",
-          MSection: "xxxxx",
-          tel: "16535854364",
-          pay: "535587",
-          cal: "523580",
-          D_value: "12007"
-        },
-        {
-          business: "药店",
-          time: "2019-02",
-          MSection: "xxxxx",
-          tel: "0373-2685359",
-          pay: "514458",
-          cal: "513580",
-          D_value: "878"
-        },
-        {
-          business: "药店",
-          time: "2019-03",
-          MSection: "xxxxx",
-          tel: "0373-2458988",
-          pay: "535562",
-          cal: "521500",
-          D_value: "14062"
-        },
-        {
-          business: "药店",
-          time: "2019-04",
-          MSection: "xxxxx",
-          tel: "0373-2365855",
-          pay: "515538",
-          cal: "535587",
-          D_value: "-20049"
-        },
-        {
-          business: "药店",
-          time: "2019-05",
-          MSection: "xxxxx",
-          tel: "13513486588",
-          pay: "532280",
-          cal: "493385",
-          D_value: "38895"
-        },
-        {
-          business: "药店",
-          time: "2019-06",
-          MSection: "xxxxx",
-          tel: "0373-2658388",
-          pay: "513522",
-          cal: "532580",
-          D_value: "-19058"
-        }
-      ],
+      drugStoreData: [],
       tableData: [],
       screenRule: false,
-      startTime: "",
-      endTime: ""
+      // 存放查询时间段
+      value2: ["", ""],
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "本月",
+            onClick(picker) {
+              picker.$emit("pick", [new Date(), new Date()]);
+            }
+          },
+          {
+            text: "今年至今",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date(new Date().getFullYear(), 0);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近六个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setMonth(start.getMonth() - 6);
+              picker.$emit("pick", [start, end]);
+            }
+          }
+        ]
+      }
     };
   },
   mounted() {
-    this.init();
-    this.drawLine(this.tableData);
+    this.init(this.processTime);
   },
   computed: {
+    processTime() {
+      let start = this.value2[0] == "" ? "0-0" : this.value2[0];
+      let end = this.value2[1] == "" ? "9999-0" : this.value2[1];
+      return { startTime: start, endTime: end };
+    },
     changeScreenRule() {
       return this.screenRule ? "block" : "none";
     }
   },
   methods: {
-    init() {
-      this.tableData = this.drugStoreData;
+    init(timeOb) {
+      let url =
+        "/homework1_4_war/rest/demo/query_hangye?hangye=3&betime=" +
+        timeOb.startTime +
+        "&edtime=" +
+        timeOb.endTime;
+      this.$http.get(url).then(res => {
+        const data = res.data;
+        this.drugStoreData = data.value;
+        this.tableData = this.drugStoreData;
+        this.drawLine(this.tableData);
+      });
     },
     // 依据时间查询
     searchSubmit() {
-      alert("依据时间查询");
+      this.init(this.processTime);
     },
     drawLine(tData) {
       // 基于准备好的dom，初始化echarts实例
@@ -352,16 +227,14 @@ export default {
 <style lang="scss" scoped>
 .SumOfDrugStore {
   background: white;
-  #table {
-  }
+
   #search {
     margin: 10px 0;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     .searchInput {
-      width: 170px;
-      margin-left: 145px;
+      margin-left: 200px;
       margin-right: 5px;
     }
     #searchSubmit {
